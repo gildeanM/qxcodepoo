@@ -16,158 +16,160 @@ Você deve desenvolver o sistema de uma clínica veterinária que deve ser capaz
 ## Intro
 
 - Cadastrar clientes pelo idCliente
-    - Id de cliente deve ser único entre os clientes
-    - Cliente tem um id e um nome de múltiplas palavras
+  - Id de cliente deve ser único entre os clientes
+  - Cliente tem um id e um nome de múltiplas palavras
 - Mostrar todos os clientes
 
 ```
+#TEST_CASE client rep
 # nwcli _idCli _nome_completo
-nwcli luke luke skywallker
-  done
-nwcli lea princesa lea
-  done
-nwcli vader darth vader
-  done
-nwcli lea fracileia moreira
-  fail: cliente lea ja cadastrado.
-lacli
-  cli luke: luke skywallker
-  cli lea: princesa lea
-  cli vader: darth vader
-
+$addcli luke luke skywallker
+$addcli lea princesa lea
+$addcli vader darth vader
+$addcli lea fracileia moreira
+fail: cliente lea ja cadastrado.
+$getcli lea
+lea:princesa lea
+$show
+luke:luke skywallker
+lea:princesa lea
+vader:darth vader
+$delcli luke
+$show
+lea:princesa lea
+vader:darth vader
+$end
 ```
 
 - Cadastrar animais.
-    - Animal tem um id, um nome e uma especie e está vinculado a um único cliente.
-    - Cada animal cadastrado deve receber um id único inteiro crescente do sistema.
-    - Um cliente não pode ter dois animais com o mesmo nome.
+  - Animal tem um id, um nome e uma especie e está vinculado a um único cliente.
+  - Um cliente não pode ter dois animais com o mesmo nome.
 - Mostrar todos os animais cadastrados.
 - Mostre os clientes com seus animais.
 
 ```
-# addAni _idCli _idAni _especie
-nwani vader rex gato
-  done
-nwani vader chaninha urubu
-  done
-nwani vader rex dino
-  fail: animal rex ja existe
-lscli vader
-  cli vader: darth vader [1:rex:gato][2:chaninha:urubu]
-nwani luke rosinha chinchila
-  done
-laani
-  [1:rex:gato]
-  [2:chaninha:urubu]
-  [3:rosinha:chinchila]
+#TEST_CASE animal rep
+# addpet _idCli _idAni _especie
+$addcli vader darth vader
+$addpet vader rex gato
+$addpet vader chaninha urubu
+$addpet vader rex dino
+fail: animal rex ja existe
+$show
+vader: darth vader [1:rex:gato][2:chaninha:urubu]
 ```
 
 - Adicionar serviços na clínica.
-    - Cada serviço tem um id único e um preço.
+  - Cada serviço tem um id único e um preço.
 - Mostrar os serviços cadastrados
 
 ```
-# addSer _idSer _preco
-nwser tosa 30.0
-  done
-nwser banho 15.0
-  done
-nwser tingimento 150.0
-  done
-laser
-  [tosa 30.0]
-  [banho 15.0]
-  [tingimento 150.0]
+#TEST_CASE service rep
+# addser _idSer _preco
+$addser tosa 30.0
+$addser banho 15.0
+$addser tingimento 150.0
+$listser
+tosa:30.0
+banho:15.0
+tingimento:150.0
+#end
 ```
 
-- Vender serviços para um animal passando id do cliente e nome do animal.
+- Vender serviços para um animal passando id do cliente e nome do animal e o id do serviço
 - Dê para cada venda um id inteiro único crescente.
 - Mostrar vendas.
 - Mostrar dinheiro total recebido.
 - Trate os possíveis erros.
 
 ```
-nwven luke rosinha tosa
-  done
-nwven vader rex banho
-  done
-nwven luke rosinha tingimento  
-  done
-nwven r2d2 rex banho
-  fail: cliente r2d2 nao existe
-nwven luke xuxu banho
-  fail: animal xuxu nao existe
-nwven luke rosinha castracao
-  fail: servico castracao nao existe
-laven
-  [0 luke rosinha tosa]
-  [1 vader rex banho]
-  [2 luke rosinha tingimento]
-saldo
-  Saldo 195 reais
+#TEST_CASE venda rep
+# sell _idCli _idPet _idSer
+$addcli vader darth vader
+$addpet vader rex gato
+$addpet vader chaninha urubu
+$addser tosa 30.0
+$addser banho 15.0
+$addser tingimento 150.0
+$sell vader rex banho
+$sell luke rosinha tingimento  
+$sell r2d2 rex banho
+fail: cliente r2d2 nao existe
+sell luke xuxu banho
+fail: animal xuxu nao existe
+sell luke rosinha castracao
+fail: servico castracao nao existe
+$listsell
+0:luke:rosinha:tosa
+1:vader:rex:banho
+2:luke:rosinha:tingimento
+$balance
+195.0
+$end
 ```
 
 ***
 
 ## Draft
 
-````java
-class Animal
-+ idAnimal: int
-+ nome: String
+```java
+class Pet {
++ idPet: String
 + especie: String
-+ dono: Cliente
 --
-+ constructor(idAnimal, nome, especie, dono)
-+ toString()
++ Pet(idPet: String, especie: String)
++ toString(): String
+}
 
-class Cliente
-+ id: String
-+ nome: String
-- animais: Map<String, Animal>
+class Client {
++ idClient: String
++ pets: Map<String, Pet>
 --
-+ addAnimal(animal: Animal): void
++ Client (idClient: String)
++ toString(): String
 --
-+ constructor (id, nome)
-+ toString()
-+ getIdCliente()
-+ getNome()
-+ getAnimais()
++ addPet(pet: Pet): void
++ getPet(idPet: String): Pet
++ delPet(idPet: String): void
++ listPets(): List<Pet>
+}
 
-class Servico
-+ idServico: int
-+ nome: String
-+ valor: float
+class Service {
++ idService: String
++ price: float
 --
-+ constructor(idServico, nome, especie)
-+ toString()
++ Service(idService: String, price: float)
++ toString(): String
+}
 
-class Venda
-+ idAnimal: String
-+ idCliente: String
-+ idServico: String
+class Sale {
++ idSale: int
++ idClient: String
++ idPet: String
++ idService: String
 --
-+ constructor(idCliente, idAnimal, idServico)
++ Sale(idClient: String, idPet: String, idService: String)
++ toString(): String
+}
 
-class ServicoClinica
-- nextSerId: int
-- nextAniId: int
-- nextVenId: int
-- rSer: Repository<Servico>
-- rAni: Repository<Animal>
-- rPes: Repository<Pessoa>
-- rVen: Repository<Venda>
+class Clinic {
++ nextSaleId: int
++ repServices: Map<String, Service>
++ repClients: Map<String, Client>
++ repSales: Map<Integer, Sale>
 --
-+ addCliente(cliente: Cliente): void
-+ addServico(nome: String, valor: String): void
-+ addAnimal(idCliente: String, nomeAnimal: String, especie: String): void
-+ vender(idCliente: String, nomeAnimal: String, IdServico: String): void
-+ saldo(): float
-+ getAllCliente(): List<Cliente>
-+ getAllServico(): List<Servico>
-+ getAllAnimal(): List<Animal>
-+ getCliente(idCliente)
-+ getServico(idServico)
-+ getAnimal(idAnimal)
-
++ addClient(cliente: Cliente): void
++ getClient(idClient: String): Client
++ delClient(idClient: String): void
++ listClients(): List<Client>
+--
++ addService(nome: String, valor: String): void
++ getService(idService: String): Service
++ delService(idService: String): void
++ listServices(): List<Service>
+--
++ sell(idCliente: String, nomeAnimal: String, IdServico: String): void
++ listSales(): List<Sale>
++ balance(): float
+}
 ````

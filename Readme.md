@@ -74,11 +74,14 @@ Significado das tags nas questões:
 - [ ] `@contato    *1 :leet`[Gerenciando telefones de um único contato](base/contato/Readme.md)
 - [ ] `@agenda     *1 :leet`[Gerencie os vários contatos de uma agenda](base/agenda/Readme.md)
 - [ ] `@agiota     *1 :leet`[Gerencie os empréstimos do agiota](base/agiota/Readme.md)
+- [ ] `@petshop    *1 :leet`[@petshop](base/petshop/Readme.md)
 - [ ] `@porquinho  *1 :leet`[Guardando moedas e itens em um cofrinho](base/porquinho/Readme.md)
 - [ ] `@tarifas    +1 :leet`[Operações de saque, depósito, extrato](base/tarifas/Readme.md)
 
 ### BLOCO_F: Herança I<!-- +polim:1 -->
 
+- [ ] `@zoo            :open`[Sistema de Animais no Zoológico](base/zoo/Readme.md)
+- [ ] `@pagamento      :open`[Sistema de Pagamentos de um Marketplace](base/pagamento/Readme.md)
 - [ ] `@shapes         :leet`[Utilizando interface em círculos e retângulos](base/shapes/Readme.md)
 - [ ] `@estacionamento :leet`[Cobrando o valor de carros e motos](base/estacionamento/Readme.md)
 - [ ] `@cofre          :leet`[Seu porquinho cresceu](base/cofre/Readme.md)
@@ -134,7 +137,6 @@ Significado das tags nas questões:
 - [ ] [@mensagem](base/mensagem/Readme.md)
 - [ ] [@vetores](base/vetores/Readme.md)
 - [ ] [@ligacao](base/ligacao/Readme.md)
-- [ ] [@petshop](base/petshop/Readme.md)
 - [ ] [Adicione título e texto em @anotacoes](base/anotacoes/Readme.md)
 - [ ] [Cache e redundância em @favoritos](base/favoritos/Readme.md)
 - [ ] [@trem](base/trem/Readme.md)

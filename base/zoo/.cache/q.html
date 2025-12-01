@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@petshop: @petshop</title>
+    <title>@zoo: Sistema de Animais no Zoológico</title>
     <style>
         body { font-family: sans-serif; line-height: 1.6; margin: 20px; }
         pre { background-color: #f4f4f4; padding: 10px; border-radius: 5px; overflow-x: auto; }
@@ -83,182 +83,48 @@
     </script>
 </head>
 <body>
-<h1>@petshop</h1>
-<!-- toch -->
-<table>
-<thead>
-<tr>
-<th><a href="#intro">Intro</a></th>
-<th><a href="#draft">Draft</a></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td></td>
-<td></td>
-</tr>
-</tbody>
-</table>
-<!-- toch -->
-
-<p><img alt="cover" src="https://raw.githubusercontent.com/qxcodepoo/arcade/master/base/petshop/cover.jpg" /></p>
-<p>Totó tá com a perna dodói. Faça o sistema da clínica veterinária para cadastrar clientes, animais, serviços e vendas.</p>
-<p>Você deve desenvolver o sistema de uma clínica veterinária que deve ser capaz de:</p>
-<hr />
-<h2>Intro</h2>
+<h1>Sistema de Animais no Zoológico</h1>
+<p>Implemente um conjunto de classes para representar animais em um zoológico, utilizando herança e polimorfismo. A ideia é ter uma classe base abstrata com métodos e atributos concretos, e subclasses que implementam comportamento específico.</p>
+<h2>Requisitos</h2>
+<ol>
+<li>
+<p>Definir uma classe abstrata <code>Animal</code> com:</p>
+</li>
+<li>
+<p>um atributo concreto <code>nome: str</code> inicializado em <code>__init__</code></p>
+</li>
+<li>um método concreto <code>apresentar_nome()</code> que imprime <code>Eu sou um(a) &lt;nome&gt;!</code></li>
+<li>
+<p>dois métodos abstratos que devem ser implementados pelas subclasses:</p>
 <ul>
-<li>Cadastrar clientes pelo idCliente<ul>
-<li>Id de cliente deve ser único entre os clientes</li>
-<li>Cliente tem um id e um nome de múltiplas palavras</li>
+<li><code>fazer_som()</code></li>
+<li><code>mover()</code></li>
 </ul>
 </li>
-<li>Mostrar todos os clientes</li>
-</ul>
-<div class="language-text highlight"><pre><span></span><code>#TEST_CASE client rep
-# nwcli _idCli _nome_completo
-$addcli luke luke skywallker
-$addcli lea princesa lea
-$addcli vader darth vader
-$addcli lea fracileia moreira
-fail: cliente lea ja cadastrado.
-$getcli lea
-lea:princesa lea
-$show
-luke:luke skywallker
-lea:princesa lea
-vader:darth vader
-$delcli luke
-$show
-lea:princesa lea
-vader:darth vader
-$end
-</code></pre></div>
-<ul>
-<li>Cadastrar animais.<ul>
-<li>Animal tem um id, um nome e uma especie e está vinculado a um único cliente.</li>
-<li>Um cliente não pode ter dois animais com o mesmo nome.</li>
-</ul>
+<li>
+<p>Criar pelo menos três subclasses concretas (por exemplo: <code>Leao</code>, <code>Elefante</code>, <code>Cobra</code>) que:</p>
 </li>
-<li>Mostrar todos os animais cadastrados.</li>
-<li>Mostre os clientes com seus animais.</li>
-</ul>
-<div class="language-text highlight"><pre><span></span><code>#TEST_CASE animal rep
-# addpet _idCli _idAni _especie
-$addcli vader darth vader
-$addpet vader rex gato
-$addpet vader chaninha urubu
-$addpet vader rex dino
-fail: animal rex ja existe
-$show
-vader: darth vader [1:rex:gato][2:chaninha:urubu]
-</code></pre></div>
-<ul>
-<li>Adicionar serviços na clínica.<ul>
-<li>Cada serviço tem um id único e um preço.</li>
-</ul>
+<li>
+<p>recebam <code>nome</code> no construtor e chamem <code>super().__init__(nome)</code></p>
 </li>
-<li>Mostrar os serviços cadastrados</li>
-</ul>
-<div class="language-text highlight"><pre><span></span><code>#TEST_CASE service rep
-# addser _idSer _preco
-$addser tosa 30.0
-$addser banho 15.0
-$addser tingimento 150.0
-$listser
-tosa:30.0
-banho:15.0
-tingimento:150.0
-#end
-</code></pre></div>
-<ul>
-<li>Vender serviços para um animal passando id do cliente e nome do animal e o id do serviço</li>
-<li>Dê para cada venda um id inteiro único crescente.</li>
-<li>Mostrar vendas.</li>
-<li>Mostrar dinheiro total recebido.</li>
-<li>Trate os possíveis erros.</li>
-</ul>
-<div class="language-text highlight"><pre><span></span><code>#TEST_CASE venda rep
-# sell _idCli _idPet _idSer
-$addcli vader darth vader
-$addpet vader rex gato
-$addpet vader chaninha urubu
-$addser tosa 30.0
-$addser banho 15.0
-$addser tingimento 150.0
-$sell vader rex banho
-$sell luke rosinha tingimento  
-$sell r2d2 rex banho
-fail: cliente r2d2 nao existe
-sell luke xuxu banho
-fail: animal xuxu nao existe
-sell luke rosinha castracao
-fail: servico castracao nao existe
-$listsell
-0:luke:rosinha:tosa
-1:vader:rex:banho
-2:luke:rosinha:tingimento
-$balance
-195.0
-$end
-</code></pre></div>
-<hr />
-<h2>Draft</h2>
-<p>```java
-class Pet {
-+ idPet: String
-+ especie: String
---
-+ Pet(idPet: String, especie: String)
-+ toString(): String
-}</p>
-<p>class Client {
-+ idClient: String
-+ pets: Map<String, Pet>
---
-+ Client (idClient: String)
-+ toString(): String
---
-+ addPet(pet: Pet): void
-+ getPet(idPet: String): Pet
-+ delPet(idPet: String): void
-+ listPets(): List<Pet>
-}</p>
-<p>class Service {
-+ idService: String
-+ price: float
---
-+ Service(idService: String, price: float)
-+ toString(): String
-}</p>
-<p>class Sale {
-+ idSale: int
-+ idClient: String
-+ idPet: String
-+ idService: String
---
-+ Sale(idClient: String, idPet: String, idService: String)
-+ toString(): String
-}</p>
-<p>class Clinic {
-+ nextSaleId: int
-+ repServices: Map<String, Service>
-+ repClients: Map<String, Client>
-+ repSales: Map<Integer, Sale>
---
-+ addClient(cliente: Cliente): void
-+ getClient(idClient: String): Client
-+ delClient(idClient: String): void
-+ listClients(): List<Client>
---
-+ addService(nome: String, valor: String): void
-+ getService(idService: String): Service
-+ delService(idService: String): void
-+ listServices(): List<Service>
---
-+ sell(idCliente: String, nomeAnimal: String, IdServico: String): void
-+ listSales(): List<Sale>
-+ balance(): float
-}
-````</p>
+<li>implementem <code>fazer_som()</code> com um som característico</li>
+<li>
+<p>implementem <code>mover()</code> com um movimento característico</p>
+</li>
+<li>
+<p>Criar uma função <code>apresentar(animal: Animal)</code> que:</p>
+</li>
+<li>
+<p>chama <code>apresentar_nome()</code></p>
+</li>
+<li>chama <code>fazer_som()</code></li>
+<li>chama <code>mover()</code></li>
+<li>
+<p>imprime o tipo/classe do objeto</p>
+</li>
+<li>
+<p>Montar uma lista de instâncias diferentes e testar o polimorfismo chamando <code>apresentar</code> para cada uma.</p>
+</li>
+</ol>
 </body>
 </html>
