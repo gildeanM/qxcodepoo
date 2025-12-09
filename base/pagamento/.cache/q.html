@@ -96,14 +96,15 @@
 <li>uso de funções polimórficas para processar objetos distintos</li>
 </ul>
 <hr />
-<h2><strong>1. Classe abstrata: <code>Pagamento</code></strong></h2>
+<h2>Implementação Inicial: Template Method</h2>
+<h3><strong>1. Classe abstrata: <code>Pagamento</code></strong></h3>
 <p>Crie uma classe abstrata <code>Pagamento</code> com:</p>
-<h3><strong>Atributos concretos</strong></h3>
+<h4><strong>Atributos concretos</strong></h4>
 <ul>
 <li><code>valor: float</code></li>
 <li><code>descricao: str</code></li>
 </ul>
-<h3><strong>Métodos concretos</strong></h3>
+<h4><strong>Métodos concretos</strong></h4>
 <ul>
 <li><code>resumo()</code>
   Imprime:</li>
@@ -114,15 +115,15 @@
 <ul>
 <li>Se o valor for menor ou igual a zero, lança uma exceção.</li>
 </ul>
-<h3><strong>Métodos abstratos</strong></h3>
+<h4><strong>Métodos abstratos</strong></h4>
 <ul>
 <li><code>processar()</code>:
   Método obrigatório que cada método de pagamento deve implementar.</li>
 </ul>
 <hr />
-<h2><strong>2. Subclasses concretas</strong></h2>
+<h3><strong>2. Subclasses concretas</strong></h3>
 <p>Crie três subclasses com regras específicas:</p>
-<h3><strong><code>CartaoCredito</code></strong></h3>
+<h4><strong><code>CartaoCredito</code></strong></h4>
 <p>Atributos novos:</p>
 <ul>
 <li><code>numero</code></li>
@@ -135,7 +136,7 @@
 <li>Caso contrário, descontar o valor do limite e confirmar pagamento.</li>
 </ul>
 <hr />
-<h3><strong><code>Pix</code></strong></h3>
+<h4><strong><code>Pix</code></strong></h4>
 <p>Atributos novos:</p>
 <ul>
 <li><code>chave</code></li>
@@ -147,7 +148,7 @@
 <li>Exibir mensagem indicando banco e chave utilizada.</li>
 </ul>
 <hr />
-<h3><strong><code>Boleto</code></strong></h3>
+<h4><strong><code>Boleto</code></strong></h4>
 <p>Atributos novos:</p>
 <ul>
 <li><code>codigo_barras</code></li>
@@ -160,7 +161,7 @@
   <code>"Boleto gerado. Aguardando pagamento..."</code></li>
 </ul>
 <hr />
-<h2><strong>3. Função polimórfica global: <code>processar_pagamento(pagamento: Pagamento)</code></strong></h2>
+<h3><strong>3. Função polimórfica global: <code>processar_pagamento(pagamento: Pagamento)</code></strong></h3>
 <p>Esta função deve:</p>
 <ol>
 <li>Chamar <code>pagamento.validar_valor()</code></li>
@@ -169,7 +170,7 @@
 </ol>
 <p>A função deve aceitar <strong>qualquer</strong> objeto que herda de <code>Pagamento</code>, demonstrando polimorfismo.</p>
 <hr />
-<h2><strong>4. Criar um carrinho de pagamentos</strong></h2>
+<h3><strong>4. Criar um carrinho de pagamentos</strong></h3>
 <p>Crie uma lista contendo vários pagamentos de tipos distintos:</p>
 <div class="language-python highlight"><pre><span></span><code><span class="n">pagamentos</span> <span class="o">=</span> <span class="p">[</span>
     <span class="n">Pix</span><span class="p">(</span><span class="mi">150</span><span class="p">,</span> <span class="s2">&quot;Camisa esportiva&quot;</span><span class="p">,</span> <span class="s2">&quot;email@ex.com&quot;</span><span class="p">,</span> <span class="s2">&quot;Banco XPTO&quot;</span><span class="p">),</span>
@@ -180,7 +181,7 @@
 </code></pre></div>
 <p>Percorra a lista e chame <code>processar_pagamento()</code> para cada item.</p>
 <hr />
-<h2><strong>5. Objetivo</strong></h2>
+<h3><strong>5. Objetivo</strong></h3>
 <p>O aluno deve observar:</p>
 <ul>
 <li>Como <strong>uma única função</strong> (<code>processar_pagamento</code>) lida com objetos de tipos distintos.</li>
@@ -191,7 +192,7 @@
 <li>Um exemplo realista de <strong>OOP aplicada a domínio</strong>, não apenas brinquedos ou animais.</li>
 </ul>
 <hr />
-<h2><strong>Resultado esperado (exemplo simplificado)</strong></h2>
+<h3><strong>Resultado esperado (exemplo simplificado)</strong></h3>
 <div class="language-text highlight"><pre><span></span><code>Pagamento de R$ 150.0: Camisa esportiva
 PIX enviado via Banco XPTO usando chave email@ex.com
 
@@ -204,5 +205,26 @@ Boleto gerado. Aguardando pagamento...
 Pagamento de R$ 800.0: Notebook
 Erro: Limite insuficiente no cartão 9999 8888 7777 6666
 </code></pre></div>
+<p><img alt="diagrama" src="https://raw.githubusercontent.com/qxcodepoo/arcade/master/base/pagamento/diagrama.png" /></p>
+<hr />
+<h2>Implementação sem herança - Strategy Pattern</h2>
+<p><img alt="diagrama_strategy" src="https://raw.githubusercontent.com/qxcodepoo/arcade/master/base/pagamento/diagrama_strategy.png" /></p>
+<p>Principais Mudanças Conceituais no Diagrama</p>
+<ul>
+<li>Seta de Composição (*--&gt;): Observe a seta com o losango preenchido saindo de Pagamento para MetodoPagamento. Isso diz: "Um Pagamento é composto por um Método de Pagamento".</li>
+<li>Delegação: A classe Pagamento não sabe como o pagamento é feito. Ela apenas chama metodo.realizar_transacao().</li>
+<li>Interface: MetodoPagamento define o contrato. As classes ...Strategy contêm os dados específicos (como número do cartão ou chave pix), limpando a classe Pagamento.</li>
+</ul>
+<div class="language-py highlight"><pre><span></span><code><span class="c1"># Criamos a estratégia (o &quot;como&quot;)</span>
+<span class="n">estrategia_pix</span> <span class="o">=</span> <span class="n">PixStrategy</span><span class="p">(</span><span class="s2">&quot;chave@email&quot;</span><span class="p">,</span> <span class="s2">&quot;Nubank&quot;</span><span class="p">)</span>
+
+<span class="c1"># Criamos o pagamento injetando a estratégia</span>
+<span class="n">p</span> <span class="o">=</span> <span class="n">Pagamento</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="s2">&quot;Livro&quot;</span><span class="p">,</span> <span class="n">estrategia_pix</span><span class="p">)</span>
+<span class="n">p</span><span class="o">.</span><span class="n">processar</span><span class="p">()</span>
+</code></pre></div>
+<p>Na implementação acima, a classe <code>Pagamento</code> não é abstrata e não possui subclasses. Em vez disso, ela recebe um objeto de estratégia que define o método de pagamento.</p>
+<p><strong>Vantagens:</strong>
+* Flexibilidade para adicionar novos métodos de pagamento sem alterar a hierarquia de classes.
+* Redução do acoplamento entre classes.</p>
 </body>
 </html>

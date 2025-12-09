@@ -14,16 +14,18 @@ A atividade reforça:
 
 ---
 
-## **1. Classe abstrata: `Pagamento`**
+## Implementação Inicial: Template Method
+
+### **1. Classe abstrata: `Pagamento`**
 
 Crie uma classe abstrata `Pagamento` com:
 
-### **Atributos concretos**
+#### **Atributos concretos**
 
 * `valor: float`
 * `descricao: str`
 
-### **Métodos concretos**
+#### **Métodos concretos**
 
 * `resumo()`
   Imprime:
@@ -35,18 +37,18 @@ Crie uma classe abstrata `Pagamento` com:
 
   * Se o valor for menor ou igual a zero, lança uma exceção.
 
-### **Métodos abstratos**
+#### **Métodos abstratos**
 
 * `processar()`:
   Método obrigatório que cada método de pagamento deve implementar.
 
 ---
 
-## **2. Subclasses concretas**
+### **2. Subclasses concretas**
 
 Crie três subclasses com regras específicas:
 
-### **`CartaoCredito`**
+#### **`CartaoCredito`**
 
 Atributos novos:
 
@@ -61,7 +63,7 @@ Regras no `processar()`:
 
 ---
 
-### **`Pix`**
+#### **`Pix`**
 
 Atributos novos:
 
@@ -75,7 +77,7 @@ Regras no `processar()`:
 
 ---
 
-### **`Boleto`**
+#### **`Boleto`**
 
 Atributos novos:
 
@@ -90,7 +92,7 @@ Regras no `processar()`:
 
 ---
 
-## **3. Função polimórfica global: `processar_pagamento(pagamento: Pagamento)`**
+### **3. Função polimórfica global: `processar_pagamento(pagamento: Pagamento)`**
 
 Esta função deve:
 
@@ -102,7 +104,7 @@ A função deve aceitar **qualquer** objeto que herda de `Pagamento`, demonstran
 
 ---
 
-## **4. Criar um carrinho de pagamentos**
+### **4. Criar um carrinho de pagamentos**
 
 Crie uma lista contendo vários pagamentos de tipos distintos:
 
@@ -119,7 +121,7 @@ Percorra a lista e chame `processar_pagamento()` para cada item.
 
 ---
 
-## **5. Objetivo**
+### **5. Objetivo**
 
 O aluno deve observar:
 
@@ -132,7 +134,7 @@ O aluno deve observar:
 
 ---
 
-## **Resultado esperado (exemplo simplificado)**
+### **Resultado esperado (exemplo simplificado)**
 
 ```
 Pagamento de R$ 150.0: Camisa esportiva
@@ -147,3 +149,32 @@ Boleto gerado. Aguardando pagamento...
 Pagamento de R$ 800.0: Notebook
 Erro: Limite insuficiente no cartão 9999 8888 7777 6666
 ```
+
+![diagrama](https://raw.githubusercontent.com/qxcodepoo/arcade/master/base/pagamento/diagrama.png)
+
+___
+
+## Implementação sem herança - Strategy Pattern
+
+![diagrama_strategy](https://raw.githubusercontent.com/qxcodepoo/arcade/master/base/pagamento/diagrama_strategy.png)
+
+Principais Mudanças Conceituais no Diagrama
+
+- Seta de Composição (*-->): Observe a seta com o losango preenchido saindo de Pagamento para MetodoPagamento. Isso diz: "Um Pagamento é composto por um Método de Pagamento".
+- Delegação: A classe Pagamento não sabe como o pagamento é feito. Ela apenas chama metodo.realizar_transacao().
+- Interface: MetodoPagamento define o contrato. As classes ...Strategy contêm os dados específicos (como número do cartão ou chave pix), limpando a classe Pagamento.
+
+```py
+# Criamos a estratégia (o "como")
+estrategia_pix = PixStrategy("chave@email", "Nubank")
+
+# Criamos o pagamento injetando a estratégia
+p = Pagamento(100, "Livro", estrategia_pix)
+p.processar()
+```
+
+Na implementação acima, a classe `Pagamento` não é abstrata e não possui subclasses. Em vez disso, ela recebe um objeto de estratégia que define o método de pagamento.
+
+__Vantagens:__
+* Flexibilidade para adicionar novos métodos de pagamento sem alterar a hierarquia de classes.
+* Redução do acoplamento entre classes.

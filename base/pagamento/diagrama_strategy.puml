@@ -1,0 +1,70 @@
+@startuml
+
+' Configurações visuais
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+
+' 1. A Interface da Estratégia (O "Como" pagar)
+interface MetodoPagamento <<Interface>> {
+    + {abstract} realizar_transacao(valor: float) : void
+}
+
+' 2. O Contexto (O objeto Pagamento em si)
+class Pagamento {
+    + valor : float
+    + descricao : str
+    - metodo : MetodoPagamento
+    __
+    + __init__(valor, desc, metodo)
+    + validar_valor() : void
+    + processar() : void
+}
+
+' 3. Implementações Concretas das Estratégias
+class PixStrategy {
+    + chave : str
+    + banco : str
+    __
+    + realizar_transacao(valor: float) : void
+}
+
+class CartaoStrategy {
+    + numero : str
+    + titular : str
+    + limite : float
+    __
+    + realizar_transacao(valor: float) : void
+}
+
+class BoletoStrategy {
+    + codigo_barras : str
+    + vencimento : str
+    __
+    + realizar_transacao(valor: float) : void
+}
+
+' 4. Cliente
+class "Sistema / Main" as Main {
+    + criar_carrinho()
+}
+
+' Relacionamentos
+
+' Composição: Pagamento "TEM UM" Método
+Pagamento *--> MetodoPagamento : possui >
+
+' Realização/Implementação das interfaces
+MetodoPagamento <|.. PixStrategy
+MetodoPagamento <|.. CartaoStrategy
+MetodoPagamento <|.. BoletoStrategy
+
+Main ..> Pagamento : cria
+Main ..> PixStrategy : instancia
+
+note left of Pagamento::processar
+  O método processar agora 
+  DELEGA a ação:
+  ""self.metodo.realizar_transacao(self.valor)""
+end note
+
+@enduml
