@@ -1,45 +1,33 @@
-import java.util.*;
-import java.util.stream.Collectors;
 
-public class Shell {
-    public static void main(String[] s) {
-        while(true){
+import java.util.Scanner;
+
+class Shell {
+    public static void main(String[] arg) {
+        Agency agency = new Agency();
+
+        while (true) {
+            String line = input();
+            println("$" + line);
+            String[] args = line.split(" ");
+
             try {
-                var line = scanner.nextLine();
-                var args = line.split(" ");
-                var cmd = args[0];
-                System.out.println("$" + line);
-
-                if(cmd.equals("end")) {
-                    break;
-                }
-                else if(cmd.equals("show")) {
-                }
-                else if(cmd.equals("addCli")) {
-                    // var clientId = args[1];
-                }
-                else if(cmd.equals("saque")) {
-                    // var accountId = Integer.parseInt(args[1]);
-                    // var value = Double.parseDouble(args[2]);
-                }
-                else if(cmd.equals("deposito")) {
-                    // var accountId = Integer.parseInt(args[1]);
-                    // var value = Double.parseDouble(args[2]);
-                }
-                else if(cmd.equals("transf")) {
-                    // var accountIdFrom = Integer.parseInt(args[1]);
-                    // var accountIdTo = Integer.parseInt(args[2]);
-                    // var value = Double.parseDouble(args[3]);
-                }
-                else if(cmd.equals("update")) {
-                }
-                else {
-                    System.out.println("fail: comando invalido");
-                }
+                if      (args[0].equals("end"))       { break; }
+                else if (args[0].equals("show"))      { print(agency); }
+                else if (args[0].equals("addCli"))    { agency.addClient( args[1] ); }
+                else if (args[0].equals("deposito"))  { agency.deposit( (int) number(args[1]), number(args[2]) ); }
+                else if (args[0].equals("saque"))     { agency.withdraw( (int) number(args[1]), number(args[2]) ); }
+                else if (args[0].equals("transf"))    { agency.transfer( (int) number(args[1]), (int) number(args[2]), number(args[3]) ); }
+                else if (args[0].equals("update"))    { agency.updateMonthly(); }
+                else                                { println("fail: comando invalido"); }
             } catch (Exception e) {
-                System.out.println(e.getMessage());
+                println( e.getMessage() );
             }
         }
     }
+
     private static Scanner scanner = new Scanner(System.in);
+    private static String  input()                { return scanner.nextLine();        }
+    private static double  number(String value)   { return Double.parseDouble(value); }
+    public  static void    println(Object value)  { System.out.println(value);        }
+    public  static void    print(Object value)    { System.out.print(value);          }
 }
